@@ -4,11 +4,11 @@
     .fingerprint = 0x60a713b269ae5b2,
     .dependencies = .{
         .sokol = .{
-            .url = "git+https://github.com/floooh/sokol-zig.git#9dacdb9ecdbd124b99c828d8891363236f0a56de",
-            .hash = "sokol-0.1.0-pb1HK6VgNgBI8wSklN7Gk_SV_sgIKAa-p3042rJ6HQH1",
+            .url = "git+https://github.com/floooh/sokol-zig.git#baa842af7081c0d26d94847c5ecb398d8c5005cb",
+            .hash = "sokol-0.1.0-pb1HK_-oNgARi7JDvtvcu9fo8-5ArHCZ3u2bcBsFsu0y",
         },
         .cimgui = .{
-            .url = "git+https://github.com/floooh/dcimgui.git#78d96d47d6874c065c2f6a4b12f02a462ff32742",
+            .url = "git+https://github.com/floooh/dcimgui.git#4bc7f9147073585b46e81ec750bffda2eb6d6832",
             .hash = "cimgui-0.1.0-44ClkdQjlQDAxGXHT035QPGsTEex3c7VXeDkqJG8eUqO",
         },
     },
