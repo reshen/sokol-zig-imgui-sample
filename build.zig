@@ -11,6 +11,7 @@ pub fn build(b: *Build) !void {
     const optimize = b.standardOptimizeOption(.{});
 
     const opt_docking = b.option(bool, "docking", "Build with docking support") orelse false;
+    const opt_dynamic = b.option(bool, "dynamic_linkage", "Build dynamically linked libs") orelse false;
 
     // Get the matching Zig module name, C header search path and C library for
     // vanilla imgui vs the imgui docking branch.
@@ -22,14 +23,31 @@ pub fn build(b: *Build) !void {
         .optimize = optimize,
         .with_sokol_imgui = true,
         .with_tracing = true,
+        .dynamic_linkage = opt_dynamic,
     });
     const dep_cimgui = b.dependency("cimgui", .{
         .target = target,
         .optimize = optimize,
+        .dynamic_linkage = opt_dynamic,
     });
+
+    const cimgui_artifact_name = if (opt_docking) "cimgui_docking_clib" else "cimgui_clib";
+    const cimgui_header_path = if (opt_docking) "src-docking/" else "src/";
 
     // inject the cimgui header search path into the sokol C library compile step
     dep_sokol.artifact("sokol_clib").root_module.addIncludePath(dep_cimgui.path(cimgui_conf.include_dir));
+
+    // in case we're dynamically linking, make sure symbols are found
+    if (opt_dynamic) {
+        dep_sokol.artifact("sokol_clib").root_module.linkLibrary(dep_cimgui.artifact(cimgui_artifact_name));
+    }
+
+    // make cimgui artifacts (libs, headers) available in build output
+    dep_cimgui.artifact(cimgui_artifact_name).installHeadersDirectory(dep_cimgui.path(cimgui_header_path), "cimgui", .{});
+    b.installArtifact(dep_cimgui.artifact(cimgui_artifact_name));
+
+    // make sokol artifacts (libs, headers) available in build output
+    b.installArtifact(dep_sokol.artifact("sokol_clib"));
 
     // main module with sokol and cimgui imports
     const mod_main = b.createModule(.{
